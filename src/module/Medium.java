@@ -3,7 +3,8 @@ package module;
 import java.util.ArrayList;
 
 public class Medium extends Queue{
-    private final static double machineCostHour =0;
+    private final static double machineCostHour = 10;
+    private final static double maximumRequestTime = 480;
     private static Medium medium_me = null;
 
     /*
@@ -21,5 +22,10 @@ public class Medium extends Queue{
         return medium_me;
     }
 
+    public double getMachineCostHour() {
+        return machineCostHour;
+    }
+
+    public double getMaximumRequestTime() {return maximumRequestTime;}
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class ShortQueue extends Queue {
     private final static double machineCostHour =0;
+    private final static double maximumRequestTime = 60;
     private static ShortQueue short_me = null;
 
     /*
@@ -28,8 +29,8 @@ public class ShortQueue extends Queue {
     public void setShort_me(ShortQueue short_me) {
         this.short_me = short_me;
     }
-
-    public static double getMachineCostHour() {
+    public double getMachineCostHour() {
         return machineCostHour;
     }
+    public double getMaximumRequestTime() {return maximumRequestTime;}
 }

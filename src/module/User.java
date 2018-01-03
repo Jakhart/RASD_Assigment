@@ -6,7 +6,17 @@ public abstract class User {
     private String userType;
     private int parameter;
 
-
+    /**
+     * Check if a user has enough budget to submit the request in parameter
+     * @param requestCreated
+     * @return
+     */
+    public boolean checkBudget(Request requestCreated){
+        if(this.getBudget() < requestCreated.getPriceOfRequest())
+            return false;
+        else
+            return true;
+    }
 
     /*
     Accessors

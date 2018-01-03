@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Large extends Queue{
     private final static double machineCostHour =0;
+    private final static double maximumRequestTime = 960;
     private static Large large_me = null;
 
     /*
@@ -20,4 +21,9 @@ public class Large extends Queue{
             large_me = new Large();
         return large_me;
     }
+
+    public double getMachineCostHour() {
+        return machineCostHour;
+    }
+    public double getMaximumRequestTime() {return maximumRequestTime;}
 }

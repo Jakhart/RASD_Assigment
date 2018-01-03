@@ -1,15 +1,23 @@
 package module;
 
 public class Researcher extends User{
-    private double additionalRessources;
+    private double additionalResources;
     private String groupName;
 
-    public double getAdditionalRessources() {
-        return additionalRessources;
+    public Researcher(double additionalResources, double budgetInput){
+        this.setAdditionalResources(additionalResources);
+        this.setBudget(budgetInput + additionalResources);
+        this.setUserType("Researcher");
+        this.setParameter(1);
+        this.setTimeBetweenTwoRequest(Random.exponentialProbability(20,this.getParameter()));
     }
 
-    public void setAdditionalRessources(double additionalRessources) {
-        this.additionalRessources = additionalRessources;
+    public double getAdditionalResources() {
+        return additionalResources;
+    }
+
+    public void setAdditionalResources(double additionalResources) {
+        this.additionalResources = additionalResources;
     }
 
     public String getGroupName() {

@@ -15,13 +15,9 @@ public abstract class Queue {
     private static double totalWaitTime;
     private static double turnaroundSum;
 
-
-
-
     /*
     Accessors
      */
-
     public static int getCoreAmountAvailable() {
         return coreAmountAvailable;
     }
@@ -85,4 +81,8 @@ public abstract class Queue {
     public static void setTurnaroundSum(double turnaroundSum) {
         Queue.turnaroundSum = turnaroundSum;
     }
+
+    public abstract double getMachineCostHour();
+
+    public abstract double getMaximumRequestTime();
 }
