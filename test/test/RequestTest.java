@@ -3,6 +3,8 @@ package test;
 import module.*;
 import org.junit.Test;
 
+import java.util.Timer;
+
 import static org.junit.Assert.*;
 
 public class RequestTest {
@@ -49,6 +51,7 @@ public class RequestTest {
      */
     @Test
     public void testGenerateProcessingTime(){
+        //Test for a request with coresAmount linked to the Short queue
         Request request1 = new Request(new Student(30));
         request1.setQueueType(ShortQueue.getInstance());
         request1.generateProcessingTime();
@@ -56,18 +59,21 @@ public class RequestTest {
                 && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime());
         assertEquals(true, test);
 
+        //Test for a request with coresAmount linked to the Medium queue
         request1.setQueueType(Medium.getInstance());
         request1.generateProcessingTime();
         test = (request1.getProcessingTime() > 0
                 && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime());
         assertEquals(true, test);
 
+        //Test for a request with coresAmount linked to the Large queue
         request1.setQueueType(Large.getInstance());
         request1.generateProcessingTime();
         test = (request1.getProcessingTime() > 0
                 && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime());
         assertEquals(true, test);
 
+        //Test for a request with coresAmount linked to the Huge queue
         request1.setQueueType(Huge.getInstance());
         request1.generateProcessingTime();
         test = (request1.getProcessingTime() > 0
@@ -85,5 +91,48 @@ public class RequestTest {
         request.setPriceOfRequest(4000);
         request.refundPayment();
         assertEquals(8000.0, user.getBudget(), 0.01);
+    }
+
+
+    /**
+     * Test of the method finishBeforeWE() of the Request class.
+     */
+    @Test
+    public void testFinishBeforeWE(){
+        Request request = new Request(new Student(30));
+        //Verify that the program is working if a request finish before the cutoff time
+        //Request send on the second friday of the simulation just before cutoff time
+        request.setSendTime(Time.FULLWEEK + Time.CUTOFF - 60);
+        request.setProcessingTime(60);
+        Time.addCountWeeks();
+        assertTrue(request.finishBeforeWE());
+
+        //Verify that the program is working if a request finish after the cutoff time
+        request.setWaitTime(60);
+        assertFalse(request.finishBeforeWE());
+
+        //Verify the exception handling
+        request.setSendTime(- 60);
+        request.setProcessingTime(0);
+        try {
+            assertTrue(request.finishBeforeWE());
+            fail("Should throw an exception if the finishing time isn't a possible value of a week time.");
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
+
+    /**
+     * Test of the method finishDuringWE() of the Request class.
+     */
+    @Test
+    public void testFinishDuringWE(){
+        Request request = new Request(new Student(30));
+        request.setProcessingTime(Time.WEEKEND);
+        Time.setweekendPast(0);
+        assertTrue(request.finishDuringWE());
+
+        Time.setweekendPast(1);
+        assertFalse(request.finishDuringWE());
     }
 }

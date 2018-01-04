@@ -15,9 +15,21 @@ public abstract class Queue {
     private static double totalWaitTime;
     private static double turnaroundSum;
 
-    /*
-    Accessors
+    /**
+     * Check if the request can be process by its queue.
+     * @param request
+     * @return
      */
+    public boolean checkCores(Request request){
+        if(Queue.getCoreAmountAvailable() < request.getCoresNeeded())
+            return false;
+        else
+            return true;
+    }
+
+    /*********************
+    Accessors
+     ***********************/
     public static int getCoreAmountAvailable() {
         return coreAmountAvailable;
     }

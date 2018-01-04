@@ -16,6 +16,10 @@ public class Time {
         else
             return true;
     }
+    public final static double CUTOFF = 6240;
+    public final static double FULLWEEK = 10_080;
+    public final static double WEEKEND = FULLWEEK - CUTOFF;
+    private static double weekendPast = 0;
 
     /*
     Accessors
@@ -26,5 +30,13 @@ public class Time {
 
     public static void addCountWeeks() {
         Time.countWeeks++;
+    }
+
+    public static double getweekendPast() {
+        return weekendPast;
+    }
+
+    public static void setweekendPast(double weekendPast) {
+        Time.weekendPast = weekendPast;
     }
 }

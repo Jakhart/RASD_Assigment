@@ -26,7 +26,6 @@ public class Request implements Comparator{
                 Random.exponentialProbability(200, user.getParameter()));
     }
 
-
     /**
      * Find the adequate queue for the request, in terms of the number of cores requested.
      * -Warning- This method is based on
@@ -92,9 +91,38 @@ public class Request implements Comparator{
         return (this.getWaitTime() + this.getProcessingTime()) / this.getProcessingTime();
     }
 
-    /*
-     ACCESSORS
+    /**
+     * Test if the request finish before the cutoff time.
+     * @return
      */
+    public boolean finishBeforeWE(){
+        double finishingTime = (this.getSendTime() + this.getProcessingTime() + this.getWaitTime())
+                - (Time.getCountWeeks() - 1)*Time.FULLWEEK;
+        if(finishingTime > Time.FULLWEEK || finishingTime < 0)
+            throw new IllegalArgumentException("The finishing time of the request is invalid: " + finishingTime);
+        if(finishingTime > Time.CUTOFF)
+            return false;
+        else{
+            return true;
+        }
+    }
+
+    /**
+     * Test if a request finish before the end of the end of the weekend (Monday 9:00 AM)
+     * Only useful for the huge request.
+     * @return
+     */
+    public boolean finishDuringWE(){
+        if( Time.getweekendPast() + this.getProcessingTime() <= Time.WEEKEND)
+            return true;
+        else{
+            return false;
+        }
+    }
+
+    /******************************************
+     ACCESSORS
+     ******************************************/
     public int getCoresNeeded() {
         return coresNeeded;
     }
