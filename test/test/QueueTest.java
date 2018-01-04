@@ -96,6 +96,27 @@ public class QueueTest {
 
     @Test
     public void testProcessRequest(){
-
+        reloadArray();
+        Request request1 = new Request(200,0,120,Large.getInstance(),500);
+        Request request2 = new Request(250,0,250,Large.getInstance(),524);
+        Request request3 = new Request(300,0,120,Large.getInstance(),500);
+        Request request4 = new Request(800,0,120,Large.getInstance(),500);
+        Request request5 = new Request(6241,0,120,Large.getInstance(),500);
+        request5.setUser(new Student(50));
+        Queue queue = Large.getInstance();
+        queue.processRequest(request1);
+        assertEquals(0, request1.getWaitTime(), 0.00001);
+        assertEquals(1, Large.getInstance().getRunningRequest().size());
+        queue.processRequest(request2);
+        assertEquals(0, request2.getWaitTime(), 0.00001);
+        assertEquals(2, Large.getInstance().getRunningRequest().size());
+        queue.processRequest(request3);
+        assertEquals(20, request3.getWaitTime(), 0.00001);
+        assertEquals(2, Large.getInstance().getRunningRequest().size());
+        queue.processRequest(request4);
+        assertEquals(0, request4.getWaitTime(), 0.00001);
+        assertEquals(1, Large.getInstance().getRunningRequest().size());
+        queue.processRequest(request5);
+        assertEquals(50 + request5.getPriceOfRequest(), request5.getUser().getBudget(),0.0001);
     }
 }

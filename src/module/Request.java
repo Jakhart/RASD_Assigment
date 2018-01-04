@@ -120,9 +120,9 @@ public class Request implements Comparator{
                 - (Time.getCountWeeks() - 1)*Time.FULLWEEK;
         if(finishingTime > Time.FULLWEEK || finishingTime < 0)
             throw new IllegalArgumentException("The finishing time of the request is invalid: " + finishingTime);
-        if(finishingTime > Time.CUTOFF)
+        if(finishingTime > Time.CUTOFF) {
             return false;
-        else{
+        }else{
             return true;
         }
     }

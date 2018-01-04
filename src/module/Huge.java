@@ -24,6 +24,39 @@ public class Huge extends Queue{
         return huge_me;
     }
 
+    @Override
+    public void processRequest(Request request){
+        waitingRequest.add(request);
+    }
+
+    public void processWeekend(Request lastRequest){
+        if(lastRequest.getQueueType() != huge_me){
+            lastRequest.refundPayment();
+        }
+        else{
+            processRequest(lastRequest);
+        }
+        while(huge_me.getRunningRequest().size() != 0){
+            for (Request request : huge_me.getRunningRequest()) {
+                while (checkCores(request)) {
+                    Request finishingRequest = nextFinishRequest();
+                    freeCores(finishingRequest);
+                    request.setWaitTime(finishingRequest.getSendTime() + finishingRequest.getProcessingTime()
+                            + finishingRequest.getWaitTime() - request.getSendTime());
+                    getRunningRequest().remove(finishingRequest);
+                }
+                if (request.finishDuringWE()) {
+                    getRunningRequest().add(request);
+                    setCoreAmountAvailable(getCoreAmountAvailable() - request.getCoresNeeded());
+                    iterateOutput(request);
+                } else {
+                    getTotalProcessingTime();
+                    request.setProcessingTime(1);
+                }
+            }
+        }
+    }
+
     public double getMachineCostHour() {
         return machineCostHour;
     }

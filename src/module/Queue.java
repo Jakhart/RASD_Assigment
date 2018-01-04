@@ -25,6 +25,7 @@ public abstract class Queue {
      * @see #checkCores(Request)
      * @see #nextFinishRequest()
      * @see #freeCores(Request)
+     * @see #iterateOutput(Request)
      * @see Request#refundPayment()
      */
     public void processRequest(Request request){
@@ -32,19 +33,27 @@ public abstract class Queue {
         while(checkCores(request)){
             Request finishingRequest = nextFinishRequest();
             freeCores(finishingRequest);
+            request.setWaitTime(finishingRequest.getSendTime() + finishingRequest.getProcessingTime()
+                    + finishingRequest.getWaitTime() - request.getSendTime());
             getRunningRequest().remove(finishingRequest);
         }
         if(request.finishBeforeWE()){
             getRunningRequest().add(request);
-            /// CALCUL DU FICHIER OUTPUT
-            totalMoneyCollected += request.getProcessingTime() * getMachineCostHour();
-            totalProcessingTime += request.getProcessingTime();
-            totalWaitTime += request.getWaitTime();
-            turnaroundSum += (request.getWaitTime() + request.getProcessingTime()) / request.getProcessingTime();
+            setCoreAmountAvailable(getCoreAmountAvailable() - request.getCoresNeeded());
+            iterateOutput(request);
         }else{
             request.refundPayment();
         }
+    }
 
+    /**
+     * Iterate the value of the outputfile.
+     */
+    public void iterateOutput(Request request){
+        totalMoneyCollected += request.getProcessingTime() * getMachineCostHour();
+        totalProcessingTime += request.getProcessingTime();
+        totalWaitTime += request.getWaitTime();
+        turnaroundSum += request.calcTurnaround();
     }
 
     /**
