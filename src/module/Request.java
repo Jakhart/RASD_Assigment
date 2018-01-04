@@ -3,16 +3,34 @@ package module;
 import java.util.Comparator;
 
 public class Request implements Comparator{
-    private int coresNeeded;
-    private double processingTime;
     private double sendTime = 0;
     private double waitTime;
+    private double processingTime;
     private User user;
     private Queue queueType;
+    private int coresNeeded;
     private double priceOfRequest;
 
     /**
-     * Constructor
+     *
+     */
+    public Request(Queue queue, int coresNeeded){
+        this.queueType = queue;
+        this.coresNeeded = coresNeeded;
+    }
+    /**
+     * Global constructor use mainly for testing
+     */
+    public Request(double sendTime, double waitTime, double processingTime, Queue queue, int coresNeeded){
+        this.sendTime = sendTime;
+        this.waitTime = waitTime;
+        this.processingTime = processingTime;
+        this.queueType = queue;
+        this.coresNeeded = coresNeeded;
+        this.priceOfRequest = queue.getMachineCostHour() * processingTime;
+    }
+    /**
+     * Constructor Random
      * @param user - The user that create the request
      */
     public Request(User user){
@@ -31,18 +49,19 @@ public class Request implements Comparator{
      * -Warning- This method is based on
      * @param coresNumber - the number of cores asked by the user to treat this request.
      * @return a String with the type of the request (Short, Medium, Large or Huge)
+     * @exception IllegalArgumentException
      */
     public static Queue checkSize(int coresNumber){
-        if(coresNumber > 0 && coresNumber <= ShortQueue.getInstance().getCoreAmountAvailable()){
+        if(coresNumber > 0 && coresNumber <= ShortQueue.getInstance().getMaxCore()){
             return ShortQueue.getInstance();
-        } else if(coresNumber > ShortQueue.getInstance().getCoreAmountAvailable()
+        } else if(coresNumber > ShortQueue.getInstance().getMaxCore()
                 && coresNumber <= Medium.getInstance().getCoreAmountAvailable()){
             return Medium.getInstance();
-        } else if(coresNumber > Medium.getInstance().getCoreAmountAvailable()
-                && coresNumber <= Large.getInstance().getCoreAmountAvailable()){
+        } else if(coresNumber > Medium.getInstance().getMaxCore()
+                && coresNumber <= Large.getInstance().getMaxCore()){
             return Large.getInstance();
-        } else if(coresNumber > Large.getInstance().getCoreAmountAvailable()
-                && coresNumber <= Huge.getInstance().getCoreAmountAvailable()){
+        } else if(coresNumber > Large.getInstance().getMaxCore()
+                && coresNumber <= Huge.getInstance().getMaxCore()){
             return Huge.getInstance();
         } else{
             throw new IllegalArgumentException("The value of the cores is incorrect: " + coresNumber);
@@ -94,6 +113,7 @@ public class Request implements Comparator{
     /**
      * Test if the request finish before the cutoff time.
      * @return
+     * @exception IllegalArgumentException
      */
     public boolean finishBeforeWE(){
         double finishingTime = (this.getSendTime() + this.getProcessingTime() + this.getWaitTime())

@@ -2,7 +2,7 @@ package module;
 
 import java.util.ArrayList;
 
-public class ShortQueue extends Queue {
+public class ShortQueue extends Queue{
     private final static double machineCostHour =0;
     private final static double maximumRequestTime = 60;
     private static ShortQueue short_me = null;
@@ -11,7 +11,8 @@ public class ShortQueue extends Queue {
     Constructors in a singleton pattern
      */
     private ShortQueue(){
-        this.setCoreAmountAvailable(32);
+        this.setMaxCore(32);
+        this.setCoreAmountAvailable(this.getMaxCore());
         this.setQueueType("Short");
         this.setRunningRequest(new ArrayList<>());
     }
@@ -26,9 +27,6 @@ public class ShortQueue extends Queue {
     /*
     Accessors
      */
-    public void setShort_me(ShortQueue short_me) {
-        this.short_me = short_me;
-    }
     public double getMachineCostHour() {
         return machineCostHour;
     }

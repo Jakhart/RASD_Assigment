@@ -11,9 +11,10 @@ public class Medium extends Queue{
     Constructors in a singleton pattern
      */
     private Medium(){
-        this.setCoreAmountAvailable(205);
-        this.setQueueType("Medium");
-        this.setRunningRequest(new ArrayList<>());
+        setMaxCore(205);
+        setCoreAmountAvailable(this.getMaxCore());
+        setQueueType("Medium");
+        setRunningRequest(new ArrayList<>());
     }
 
     public static Medium getInstance() {

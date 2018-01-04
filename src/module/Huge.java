@@ -12,7 +12,8 @@ public class Huge extends Queue{
     Constructors in a singleton pattern
      */
     private Huge(){
-        this.setCoreAmountAvailable(2048);
+        this.setMaxCore(2048);
+        this.setCoreAmountAvailable(this.getMaxCore());
         this.setQueueType("Huge");
         this.setRunningRequest(new ArrayList<>());
     }
