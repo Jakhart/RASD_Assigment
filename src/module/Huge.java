@@ -3,9 +3,10 @@ package module;
 import java.util.ArrayList;
 
 public class Huge extends Queue{
-    private final static double machineCostHour =0;
+    private final static double machineCostHour =70;
     private final static double maximumRequestTime = 10_080; //The maximum Request time is one week long
     private static ArrayList<Request> waitingRequest = new ArrayList<>();
+    private static ArrayList<Integer> weekendCount = new ArrayList<>();
     private static Huge huge_me = null;
 
     /*
@@ -30,10 +31,10 @@ public class Huge extends Queue{
      * @see Request#finishDuringWE()
      */
     public void processHuge(){
+        Time.setEndWeekend(Time.FULLWEEK * Time.getCountWeeks());
         Time.addCountWeeks();
         for (int i = 0; i < getWaitingRequest().size(); i++) {
             Request request = getWaitingRequest().get(i);
-            getWaitingRequest().remove(request);
             processWaitTime(request);
             iterateOutput(request);
             //Change the processing time to be able to measure the time past during the weekend.
@@ -42,8 +43,12 @@ public class Huge extends Queue{
             if (request.finishDuringWE()) {
                 getRunningRequest().add(request);
             } else {
-                for (int j = 0; j < i; j++) {
+                for (int j = i -1 ; j >=0 ; j--) {
                     getWaitingRequest().remove(j);
+                    getWeekendCount().remove(j);
+                }
+                for (int j = 0; j < getWaitingRequest().size(); j++) {
+                    getWeekendCount().set(j, getWeekendCount().get(j) + 1);
                 }
                 request.setProcessingTime(request.getProcessingTime() - Time.WEEKEND);
                 getRunningRequest().add(request);
@@ -70,6 +75,7 @@ public class Huge extends Queue{
     @Override
     public void processRequest(Request request){
         getWaitingRequest().add(request);
+        getWeekendCount().add(0);
     }
 
     /**
@@ -80,16 +86,24 @@ public class Huge extends Queue{
      */
     @Override
     public void processWaitTime(Request request){
-        double temp = Time.getweekendPast();
+        double endWeekendPast = Time.getweekendPast();
+        request.setWaitTime(getWeekendCount().get(getWaitingRequest().indexOf(request)) * Time.WEEKEND);
         while (checkCores(request)) {
             Request finishingRequest = nextFinishRequest();
-            Time.setweekendPast(finishingRequest.getProcessingTime());
+            if(endWeekendPast < Time.getweekendPast() + finishingRequest.getProcessingTime()){
+                endWeekendPast = Time.getweekendPast() + finishingRequest.getProcessingTime();
+            }
             freeCores(finishingRequest);
-            request.setWaitTime(Time.getweekendPast() - temp);
             getRunningRequest().remove(finishingRequest);
         }
+        request.setWaitTime(request.getWaitTime() + endWeekendPast - Time.getweekendPast());
+        Time.setweekendPast(endWeekendPast);
     }
 
+    /**
+     * Calculate the wait time of a request if there is one.
+     * @return
+     */
     @Override
     public Request nextFinishRequest(){
         Request nextFinish = this.getRunningRequest().get(0);
@@ -104,6 +118,9 @@ public class Huge extends Queue{
         return nextFinish;
     }
 
+    /****************
+    Accessors
+     *****************/
     public double getMachineCostHour() {
         return machineCostHour;
     }
@@ -113,7 +130,7 @@ public class Huge extends Queue{
         return waitingRequest;
     }
 
-    public static void setWaitingRequest(ArrayList<Request> waitingRequest) {
-        Huge.waitingRequest = waitingRequest;
+    public static ArrayList<Integer> getWeekendCount() {
+        return weekendCount;
     }
 }

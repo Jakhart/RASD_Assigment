@@ -133,6 +133,7 @@ public abstract class Queue {
         totalProcessingTime += request.getProcessingTime();
         totalWaitTime += request.getWaitTime();
         turnaroundSum += request.calcTurnaround();
+        numberRequestTreat++;
     }
 
     /*********************

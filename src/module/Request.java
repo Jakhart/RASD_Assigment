@@ -38,12 +38,12 @@ public class Request implements Comparator{
     public Request(User user){
         this.user = user;
         this.sendTime = user.getTimeBetweenTwoRequest();
-        this.coresNeeded = (int) Math.round(Random.exponentialProbability(200, user.getParameter()));
+        this.coresNeeded = (int) Math.round(Simulation.exponentialProbability(2048, user.getParameter()));
         this.queueType = checkSize(this.coresNeeded);
         this.generateProcessingTime();
         this.priceOfRequest = this.getProcessingTime()*this.queueType.getMachineCostHour();
         user.setTimeBetweenTwoRequest(user.getTimeBetweenTwoRequest() +
-                Random.exponentialProbability(200, user.getParameter()));
+                Simulation.exponentialProbability(10000, user.getParameter()));
     }
 
     /**

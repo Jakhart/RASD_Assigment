@@ -10,7 +10,7 @@ public class Student extends User {
     public Student(double budgetInput){
         this.setUserType("Student");
         this.setBudget(budgetInput);
-        this.setParameter(1);
-        this.setTimeBetweenTwoRequest(Random.exponentialProbability(20,this.getParameter()));
+        this.setParameter(10);
+        this.setTimeBetweenTwoRequest(Simulation.exponentialProbability(10000,this.getParameter()));
     }
 }

@@ -1,20 +1,17 @@
 import module.*;
 import sun.awt.geom.AreaOp;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args){
-        Request request = new Request(new Student(30));
-        System.out.println(request.getQueueType());
-        request.generateProcessingTime();
-        System.out.println(request.getProcessingTime());
-        Random rand = new Random();
-        for (int i = 0; i < 5; i++) {
-            System.out.println(rand.nextInt(50));
-        }
+    public static void main(String[] args) {
+        //Simulation simulation = Simulation.input();
+        Simulation simulation = new Simulation();
+        List<Request> requests = simulation.userRequestList(simulation.userListCreation());
+        simulation.simulationProcess(requests);
+        simulation.printOutput();
+        /*for (int i = 0; i < 20; i++) {
+            System.out.println(exponentialProbability(1080, 10));
+        }*/
     }
 }

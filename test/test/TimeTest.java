@@ -15,7 +15,7 @@ public class TimeTest {
     @Test
     public void testCheckTime() {
         Request request = new Request(new Student(30));
-        request.setSendTime(Time.FULLWEEK);
+        request.setSendTime(Time.FULLWEEK + 1);
         assertTrue(Time.checkTime(request));
         request.setSendTime(Time.FULLWEEK);
         assertFalse(Time.checkTime(request));

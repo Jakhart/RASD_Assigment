@@ -15,6 +15,7 @@ public abstract class User {
         if(this.getBudget() < requestCreated.getPriceOfRequest())
             return false;
         else
+            this.setBudget(this.getBudget() - requestCreated.getPriceOfRequest());
             return true;
     }
 

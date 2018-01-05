@@ -3,7 +3,7 @@ package module;
 import java.util.ArrayList;
 
 public class ShortQueue extends Queue{
-    private final static double machineCostHour =0;
+    private final static double machineCostHour = 11;
     private final static double maximumRequestTime = 60;
     private static ShortQueue short_me = null;
 
