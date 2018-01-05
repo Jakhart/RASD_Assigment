@@ -2,6 +2,10 @@ package module;
 
 public class Time {
     private static int countWeeks = 1;
+    public final static double CUTOFF = 6240;
+    public final static double FULLWEEK = 10_080;
+    public final static double WEEKEND = FULLWEEK - CUTOFF; //3840
+    private static double weekendPast = 0;
 
     /**
      * Verify that a week didn't pass in between two request.
@@ -16,10 +20,6 @@ public class Time {
         else
             return true;
     }
-    public final static double CUTOFF = 6240;
-    public final static double FULLWEEK = 10_080;
-    public final static double WEEKEND = FULLWEEK - CUTOFF;
-    private static double weekendPast = 0;
 
     /*
     Accessors

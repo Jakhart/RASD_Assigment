@@ -18,6 +18,35 @@ public class QueueTest {
     }
 
     /**
+     * Test the method processRequest(Request) Oof the Queue class.
+     */
+    @Test
+    public void testProcessRequest(){
+        reloadArray();
+        Request request1 = new Request(200,0,120,Large.getInstance(),500);
+        Request request2 = new Request(250,0,250,Large.getInstance(),524);
+        Request request3 = new Request(300,0,120,Large.getInstance(),500);
+        Request request4 = new Request(800,0,120,Large.getInstance(),500);
+        Request request5 = new Request(6241,0,120,Large.getInstance(),500);
+        request5.setUser(new Student(50));
+        Queue queue = Large.getInstance();
+        queue.processRequest(request1);
+        assertEquals(0, request1.getWaitTime(), 0.00001);
+        assertEquals(1, Large.getInstance().getRunningRequest().size());
+        queue.processRequest(request2);
+        assertEquals(0, request2.getWaitTime(), 0.00001);
+        assertEquals(2, Large.getInstance().getRunningRequest().size());
+        queue.processRequest(request3);
+        assertEquals(20, request3.getWaitTime(), 0.00001);
+        assertEquals(2, Large.getInstance().getRunningRequest().size());
+        queue.processRequest(request4);
+        assertEquals(0, request4.getWaitTime(), 0.00001);
+        assertEquals(1, Large.getInstance().getRunningRequest().size());
+        queue.processRequest(request5);
+        assertEquals(50 + request5.getPriceOfRequest(), request5.getUser().getBudget(),0.0001);
+    }
+
+    /**
      * Test the method checkCores(Request) of the class Queue.
      */
     @Test
@@ -66,7 +95,7 @@ public class QueueTest {
     }
 
     /**
-     * Test the method checkForFinishRequest(Request) of the Queue class.
+     * Test of the method checkForFinishRequest(Request) of the Queue class.
      */
     @Test
     public void testCheckForFinishRequest(){
@@ -94,29 +123,25 @@ public class QueueTest {
         assertEquals(420, min, 0.0001);
     }
 
+    /**
+     * Test of the method processWaitTine() of the Queue class.
+     */
     @Test
-    public void testProcessRequest(){
+    public void testProcessWaitTime(){
         reloadArray();
-        Request request1 = new Request(200,0,120,Large.getInstance(),500);
-        Request request2 = new Request(250,0,250,Large.getInstance(),524);
-        Request request3 = new Request(300,0,120,Large.getInstance(),500);
-        Request request4 = new Request(800,0,120,Large.getInstance(),500);
-        Request request5 = new Request(6241,0,120,Large.getInstance(),500);
-        request5.setUser(new Student(50));
-        Queue queue = Large.getInstance();
-        queue.processRequest(request1);
+        Request request1 = new Request(200,0,60,Large.getInstance(),32);
+        Request request2 = new Request(220,0,30,Large.getInstance(),15);
+        Request request3 = new Request(260,0,30,Large.getInstance(),17);
+        Queue queue = ShortQueue.getInstance();
+
+        queue.processWaitTime(request1);
         assertEquals(0, request1.getWaitTime(), 0.00001);
-        assertEquals(1, Large.getInstance().getRunningRequest().size());
-        queue.processRequest(request2);
-        assertEquals(0, request2.getWaitTime(), 0.00001);
-        assertEquals(2, Large.getInstance().getRunningRequest().size());
-        queue.processRequest(request3);
-        assertEquals(20, request3.getWaitTime(), 0.00001);
-        assertEquals(2, Large.getInstance().getRunningRequest().size());
-        queue.processRequest(request4);
-        assertEquals(0, request4.getWaitTime(), 0.00001);
-        assertEquals(1, Large.getInstance().getRunningRequest().size());
-        queue.processRequest(request5);
-        assertEquals(50 + request5.getPriceOfRequest(), request5.getUser().getBudget(),0.0001);
+        queue.getRunningRequest().add(request1);
+        queue.setCoreAmountAvailable(0);
+        queue.processWaitTime(request2);
+        assertEquals(40, request2.getWaitTime(), 0.0001);
+        assertEquals(32, queue.getCoreAmountAvailable(), 0.0001);
+        queue.processWaitTime(request3);
+        assertEquals(0, request3.getWaitTime(), 0.0001);
     }
 }

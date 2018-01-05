@@ -93,6 +93,21 @@ public class RequestTest {
         assertEquals(8000.0, user.getBudget(), 0.01);
     }
 
+    /**
+     * Test of the method calcTurnaround() of Request class.
+     */
+    @Test
+    public void testCalcTurnaround(){
+        Request request = new Request(220, 50, 100, Medium.getInstance(), 50);
+        assertEquals((100+50)/100.0, request.calcTurnaround(), 0.1);
+        request.setProcessingTime(0);
+        try {
+            request.calcTurnaround();
+            fail("Should send a ValueException");
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
 
     /**
      * Test of the method finishBeforeWE() of the Request class.

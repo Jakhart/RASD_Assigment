@@ -1,5 +1,7 @@
 package module;
 
+import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
+
 import java.util.Comparator;
 
 public class Request implements Comparator{
@@ -105,8 +107,12 @@ public class Request implements Comparator{
     /**
      * Calculate the turnaround value for the instance request.
      * @return
+     * @exception ValueException
      */
     public double calcTurnaround(){
+        if(this.getProcessingTime() == 0){
+            throw new ValueException("The processing time is equal to 0");
+        }
         return (this.getWaitTime() + this.getProcessingTime()) / this.getProcessingTime();
     }
 
@@ -133,7 +139,7 @@ public class Request implements Comparator{
      * @return
      */
     public boolean finishDuringWE(){
-        if( Time.getweekendPast() + this.getProcessingTime() <= Time.WEEKEND)
+        if(this.getProcessingTime() <= Time.WEEKEND)
             return true;
         else{
             return false;

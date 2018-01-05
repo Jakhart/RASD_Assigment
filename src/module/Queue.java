@@ -22,21 +22,13 @@ public abstract class Queue {
      *Process the request and iterate the value needed for the input file.
      * @param request
      * @see #checkForFinishRequest(Request)
-     * @see #checkCores(Request)
-     * @see #nextFinishRequest()
-     * @see #freeCores(Request)
+     * @see #processWaitTime(Request)
      * @see #iterateOutput(Request)
      * @see Request#refundPayment()
      */
     public void processRequest(Request request){
         checkForFinishRequest(request);
-        while(checkCores(request)){
-            Request finishingRequest = nextFinishRequest();
-            freeCores(finishingRequest);
-            request.setWaitTime(finishingRequest.getSendTime() + finishingRequest.getProcessingTime()
-                    + finishingRequest.getWaitTime() - request.getSendTime());
-            getRunningRequest().remove(finishingRequest);
-        }
+        processWaitTime(request);
         if(request.finishBeforeWE()){
             getRunningRequest().add(request);
             setCoreAmountAvailable(getCoreAmountAvailable() - request.getCoresNeeded());
@@ -47,13 +39,14 @@ public abstract class Queue {
     }
 
     /**
-     * Iterate the value of the outputfile.
+     * Process the request if their send time is during a weekend.
+     * @param request
+     * @see Request #refundPayement()
+     * @see Huge #processHuge()
      */
-    public void iterateOutput(Request request){
-        totalMoneyCollected += request.getProcessingTime() * getMachineCostHour();
-        totalProcessingTime += request.getProcessingTime();
-        totalWaitTime += request.getWaitTime();
-        turnaroundSum += request.calcTurnaround();
+    public void processWeekend(Request request){
+        request.refundPayment();
+        Huge.getInstance().processHuge();
     }
 
     /**
@@ -113,6 +106,33 @@ public abstract class Queue {
             }
         }
         return nextFinish;
+    }
+
+    /**
+     * Calculate the wait time if there is one.
+     * @param request
+     * @see #checkCores(Request)
+     * @see #nextFinishRequest()
+     * @see #freeCores(Request)
+     */
+    public void processWaitTime(Request request){
+        while(checkCores(request)){
+            Request finishingRequest = nextFinishRequest();
+            freeCores(finishingRequest);
+            request.setWaitTime(finishingRequest.getSendTime() + finishingRequest.getProcessingTime()
+                    + finishingRequest.getWaitTime() - request.getSendTime());
+            getRunningRequest().remove(finishingRequest);
+        }
+    }
+
+    /**
+     * Iterate the value of the output file.
+     */
+    public void iterateOutput(Request request){
+        totalMoneyCollected += request.getProcessingTime() * getMachineCostHour();
+        totalProcessingTime += request.getProcessingTime();
+        totalWaitTime += request.getWaitTime();
+        turnaroundSum += request.calcTurnaround();
     }
 
     /*********************
