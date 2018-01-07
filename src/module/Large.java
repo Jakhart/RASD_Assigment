@@ -3,7 +3,7 @@ package module;
 import java.util.ArrayList;
 
 public class Large extends Queue{
-    private final static double machineCostHour = 37;
+    private final static double machineCostHour = 15;
     private final static double maximumRequestTime = 960;
     private static Large large_me = null;
 

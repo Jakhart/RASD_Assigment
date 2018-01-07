@@ -3,7 +3,7 @@ package module;
 import java.util.ArrayList;
 
 public class Huge extends Queue{
-    private final static double machineCostHour =70;
+    private final static double machineCostHour = 30;
     private final static double maximumRequestTime = 10_080; //The maximum Request time is one week long
     private static ArrayList<Request> waitingRequest = new ArrayList<>();
     private static ArrayList<Integer> weekendCount = new ArrayList<>();
@@ -29,10 +29,12 @@ public class Huge extends Queue{
      * Process the Huge request queue that is running only during the weekend.
      * @see Huge {@link #processWaitTime(Request)}
      * @see Request#finishDuringWE()
+     * @param lastInputRequest - The last request that has been process.
      */
-    public void processHuge(){
+    public void processHuge(Request lastInputRequest){
         Time.setEndWeekend(Time.FULLWEEK * Time.getCountWeeks());
         Time.addCountWeeks();
+        checkForFinishRequest(lastInputRequest);
         for (int i = 0; i < getWaitingRequest().size(); i++) {
             Request request = getWaitingRequest().get(i);
             processWaitTime(request);
@@ -55,22 +57,23 @@ public class Huge extends Queue{
                 return;
             }
         }
+        getWaitingRequest().clear();
     }
 
     /**
      * Process the weekend queue.
-     * @param request
-     * @see Queue {@link #processHuge()}
+     * @param request - the request to process.
+     * @see Queue {@link #processHuge(Request)}
      */
     @Override
     public void processWeekend(Request request){
         getRunningRequest().add(request);
-        processHuge();
+        processHuge(request);
     }
 
     /**
      * Add the request to the waiting list.
-     * @param request
+     * @param request - the request to process.
      */
     @Override
     public void processRequest(Request request){
@@ -80,7 +83,7 @@ public class Huge extends Queue{
 
     /**
      * Calculate the waitTime and instantiate the time past during the weekend.
-     * @param request
+     * @param request - The request to process.
      * @see #freeCores(Request)
      * @see #checkCores(Request)
      */
@@ -102,7 +105,7 @@ public class Huge extends Queue{
 
     /**
      * Calculate the wait time of a request if there is one.
-     * @return
+     * @return - A Request object, the next request to finish it's task.
      */
     @Override
     public Request nextFinishRequest(){
@@ -130,7 +133,15 @@ public class Huge extends Queue{
         return waitingRequest;
     }
 
+    public static void setWaitingRequest(ArrayList<Request> waitingRequest) {
+        Huge.waitingRequest = waitingRequest;
+    }
+
     public static ArrayList<Integer> getWeekendCount() {
         return weekendCount;
+    }
+
+    public static void setWeekendCount(ArrayList<Integer> weekendCount) {
+        Huge.weekendCount = weekendCount;
     }
 }

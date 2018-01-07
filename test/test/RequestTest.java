@@ -1,30 +1,44 @@
 package test;
 
 import module.*;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Timer;
 
 import static org.junit.Assert.*;
 
 public class RequestTest {
 
+    @BeforeClass
+    public static void setUpClass() throws Exception{
+        Queue[] queues = {ShortQueue.getInstance(),Medium.getInstance(),Large.getInstance(),Huge.getInstance()};
+        for (Queue queue : queues) {
+            queue.setRunningRequest(new ArrayList<>());
+            queue.setCoreAmountAvailable(queue.getMaxCore());
+        }
+        Huge.getInstance().setWaitingRequest(new ArrayList<>());
+        Huge.getInstance().setWeekendCount(new ArrayList<>());
+        Time.setCountWeeks(1);
+    }
     /**
      * Test of the checkSize(int) method of the Request class.
      */
     @Test
     public void testCheckSize() {
-        int cores = 32;
-        assertEquals(ShortQueue.getInstance(), Request.checkSize(cores));
-        cores = 33;
-        assertEquals(Medium.getInstance(), Request.checkSize(cores));
-        cores = 206;
-        assertEquals(Large.getInstance(), Request.checkSize(cores));
-        cores = 2048;
-        assertEquals(Huge.getInstance(), Request.checkSize(cores));
-        cores = -1;
+        Request request = new Request(100, 0, 600, ShortQueue.getInstance(), 10);
+        request.setCoresNeeded(32);
+        assertEquals(ShortQueue.getInstance(), request.checkSize());
+        request.setCoresNeeded(33);
+        assertEquals(Medium.getInstance(), request.checkSize());
+        request.setCoresNeeded(206);
+        assertEquals(Large.getInstance(), request.checkSize());
+        request.setCoresNeeded(2048);
+        assertEquals(Huge.getInstance(), request.checkSize());
+        request.setCoresNeeded(-1);
         try {
-            Request.checkSize(cores);
+            request.checkSize();
             fail("Should throw exception  when calculating the size with an incorrect number of cores");
         } catch (Exception e) {
             e.getMessage();
@@ -54,31 +68,45 @@ public class RequestTest {
         //Test for a request with coresAmount linked to the Short queue
         Request request1 = new Request(new Student(30));
         request1.setQueueType(ShortQueue.getInstance());
-        request1.generateProcessingTime();
-        boolean test = (request1.getProcessingTime() > 0
-                && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime());
-        assertEquals(true, test);
-
-        //Test for a request with coresAmount linked to the Medium queue
-        request1.setQueueType(Medium.getInstance());
-        request1.generateProcessingTime();
-        test = (request1.getProcessingTime() > 0
-                && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime());
-        assertEquals(true, test);
-
-        //Test for a request with coresAmount linked to the Large queue
-        request1.setQueueType(Large.getInstance());
-        request1.generateProcessingTime();
-        test = (request1.getProcessingTime() > 0
-                && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime());
-        assertEquals(true, test);
-
-        //Test for a request with coresAmount linked to the Huge queue
-        request1.setQueueType(Huge.getInstance());
-        request1.generateProcessingTime();
-        test = (request1.getProcessingTime() > 0
-                && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime());
-        assertEquals(true, test);
+        int t = 0;
+        boolean test;
+        while(t < 100) {
+            request1.generateProcessingTime();
+            test = (request1.getProcessingTime() > 0
+                    && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime() + 1);
+            assertEquals(true, test);
+            t++;
+        }
+        t = 0;
+        while(t < 100) {
+            //Test for a request with coresAmount linked to the Medium queue
+            request1.setQueueType(Medium.getInstance());
+            request1.generateProcessingTime();
+            test = (request1.getProcessingTime() > 0
+                    && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime() + 1);
+            assertEquals(true, test);
+            t++;
+        }
+        t=0;
+        while(t < 100) {
+            //Test for a request with coresAmount linked to the Large queue
+            request1.setQueueType(Large.getInstance());
+            request1.generateProcessingTime();
+            test = (request1.getProcessingTime() > 0
+                    && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime() + 1);
+            assertEquals(true, test);
+            t++;
+        }
+        t=0;
+        while (t<100) {
+            //Test for a request with coresAmount linked to the Huge queue
+            request1.setQueueType(Huge.getInstance());
+            request1.generateProcessingTime();
+            test = (request1.getProcessingTime() > 0
+                    && request1.getProcessingTime() <= request1.getQueueType().getMaximumRequestTime() + 1);
+            assertEquals(true, test);
+            t++;
+        }
     }
 
     /**
@@ -115,9 +143,9 @@ public class RequestTest {
     @Test
     public void testFinishBeforeWE(){
         Request request = new Request(new Student(30));
-        //Verify that the program is working if a request finish before the cutoff time
         //Request send on the second friday of the simulation just before cutoff time
         request.setSendTime(Time.FULLWEEK + Time.CUTOFF - 60);
+        //Verify that the program is working if a request finish before the cutoff time
         request.setProcessingTime(60);
         Time.addCountWeeks();
         assertTrue(request.finishBeforeWE());
@@ -142,12 +170,9 @@ public class RequestTest {
      */
     @Test
     public void testFinishDuringWE(){
-        Request request = new Request(new Student(30));
-        request.setProcessingTime(Time.WEEKEND);
-        Time.setweekendPast(0);
+        Request request = new Request(300,0,3840,Medium.getInstance(),50);
         assertTrue(request.finishDuringWE());
-
-        Time.setweekendPast(1);
+        request.setProcessingTime(3841);
         assertFalse(request.finishDuringWE());
     }
 }

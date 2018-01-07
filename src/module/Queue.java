@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.IllegalFormatException;
 import java.util.List;
 
-
+/**
+ *This class is the super class of all the Queue of the system.
+ */
 public abstract class Queue {
     private int coreAmountAvailable;
     private int maxCore;
@@ -20,7 +22,7 @@ public abstract class Queue {
 
     /**
      *Process the request and iterate the value needed for the input file.
-     * @param request
+     * @param request - Request object to process.
      * @see #checkForFinishRequest(Request)
      * @see #processWaitTime(Request)
      * @see #iterateOutput(Request)
@@ -40,20 +42,20 @@ public abstract class Queue {
 
     /**
      * Process the request if their send time is during a weekend.
-     * @param request
+     * @param request - Request object to process.
      * @see Request #refundPayement()
      * @see Huge #processHuge()
      */
     public void processWeekend(Request request){
         request.refundPayment();
-        Huge.getInstance().processHuge();
+        Huge.getInstance().processHuge(request);
     }
 
     /**
      * Check if any request finish their job in the time between the last request and the argument.
      * Is so the cores used are free and the request is remove.
      * @see #freeCores(Request)
-     * @param lastRequestEmit
+     * @param lastRequestEmit - Request object that is processing.
      */
     public void checkForFinishRequest(Request lastRequestEmit){
         for (int i = this.getRunningRequest().size() - 1; i >= 0 ; i--) {
@@ -68,8 +70,8 @@ public abstract class Queue {
 
     /**
      * Check if the request can be process by its queue.
-     * @param request
-     * @return
+     * @param request - Request object that is processing
+     * @return - boolean type, true if the queue cannot provided the requested cores.
      */
     public boolean checkCores(Request request){
         if(this.getCoreAmountAvailable() < request.getCoresNeeded()) {
@@ -82,8 +84,8 @@ public abstract class Queue {
 
     /**
      * Free the cores used by a request once the request has ended.
-     * @param request
-     * @exception IllegalFormatException
+     * @param request - Request object, that just finish its task.
+     * @exception IllegalFormatException - Exception rise if the core amount maximum of the queue is exceed.
      */
     public void freeCores(Request request){
         this.coreAmountAvailable += request.getCoresNeeded();
@@ -93,7 +95,7 @@ public abstract class Queue {
 
     /**
      * Search and return for the next request to finish its job.
-     * @return
+     * @return - Request object, the next request to finish it's task.
      */
     public Request nextFinishRequest(){
         Request nextFinish = this.getRunningRequest().get(0);
@@ -110,7 +112,7 @@ public abstract class Queue {
 
     /**
      * Calculate the wait time if there is one.
-     * @param request
+     * @param request - Request object to process
      * @see #checkCores(Request)
      * @see #nextFinishRequest()
      * @see #freeCores(Request)
@@ -127,6 +129,7 @@ public abstract class Queue {
 
     /**
      * Iterate the value of the output file.
+     * @param request The information of this request will added to the general information of the output file.
      */
     public void iterateOutput(Request request){
         totalMoneyCollected += request.getProcessingTime() * getMachineCostHour();
@@ -136,7 +139,7 @@ public abstract class Queue {
         numberRequestTreat++;
     }
 
-    /*********************
+    /*
     Accessors
      ***********************/
 
@@ -165,10 +168,6 @@ public abstract class Queue {
         return numberRequestTreat;
     }
 
-    public void setNumberRequestTreat(int numberRequestTreat) {
-        this.numberRequestTreat = numberRequestTreat;
-    }
-
     public String getQueueType() {
         return queueType;
     }
@@ -189,31 +188,15 @@ public abstract class Queue {
         return totalMoneyCollected;
     }
 
-    public void setTotalMoneyCollected(double totalMoneyCollected) {
-        this.totalMoneyCollected = totalMoneyCollected;
-    }
-
     public double getTotalProcessingTime() {
         return totalProcessingTime;
-    }
-
-    public void setTotalProcessingTime(double totalProcessingTime) {
-        this.totalProcessingTime = totalProcessingTime;
     }
 
     public double getTotalWaitTime() {
         return totalWaitTime;
     }
 
-    public void setTotalWaitTime(double totalWaitTime) {
-        this.totalWaitTime = totalWaitTime;
-    }
-
     public double getTurnaroundSum() {
         return turnaroundSum;
-    }
-
-    public void setTurnaroundSum(double turnaroundSum) {
-        this.turnaroundSum = turnaroundSum;
     }
 }

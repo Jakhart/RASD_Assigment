@@ -1,6 +1,7 @@
 package test;
 
 import module.*;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,7 +13,22 @@ public class HugeTest {
         ShortQueue.getInstance().setRunningRequest(new ArrayList<>());
         Medium.getInstance().setRunningRequest(new ArrayList<>());
         Large.getInstance().setRunningRequest(new ArrayList<>());
-        Huge.getInstance().setRunningRequest(new ArrayList<>());
+        Huge.getInstance().setRunningRequest(new ArrayList<>());;
+        Huge.getInstance().setWaitingRequest(new ArrayList<>());
+        Huge.getInstance().setCoreAmountAvailable(Huge.getInstance().getMaxCore());
+        Huge.getInstance().setWeekendCount(new ArrayList<>());
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception{
+        Queue[] queues = {ShortQueue.getInstance(),Medium.getInstance(),Large.getInstance(),Huge.getInstance()};
+        for (Queue queue : queues) {
+            queue.setRunningRequest(new ArrayList<>());
+            queue.setCoreAmountAvailable(queue.getMaxCore());
+        }
+        Huge.getInstance().setWaitingRequest(new ArrayList<>());
+        Huge.getInstance().setWeekendCount(new ArrayList<>());
+        Time.setCountWeeks(1);
     }
 
     /**
@@ -30,7 +46,7 @@ public class HugeTest {
         queue.processRequest(request2);
         queue.processRequest(request3);
         queue.processRequest(request4);
-        queue.processHuge();
+        queue.processHuge(request4);
 
         assertEquals(1000, request2.getWaitTime(), 0.0001);
         assertEquals(1, queue.getRunningRequest().size());

@@ -8,8 +8,8 @@ public abstract class User {
 
     /**
      * Check if a user has enough budget to submit the request in parameter
-     * @param requestCreated
-     * @return
+     * @param requestCreated - The request created by the user.
+     * @return - a boolean that tell if the user has enough budget or not to compute the demanded request.
      */
     public boolean checkBudget(Request requestCreated){
         if(this.getBudget() < requestCreated.getPriceOfRequest())

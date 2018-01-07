@@ -5,7 +5,7 @@ public class Student extends User {
 
     /**
      * Constructor
-     * @param budgetInput
+     * @param budgetInput - Budget of the user
      */
     public Student(double budgetInput){
         this.setUserType("Student");

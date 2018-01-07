@@ -13,10 +13,6 @@ public class Researcher extends User{
         this.setTimeBetweenTwoRequest(Simulation.exponentialProbability(10000,this.getParameter()));
     }
 
-    public double getAdditionalResources() {
-        return additionalResources;
-    }
-
     public void setAdditionalResources(double additionalResources) {
         this.additionalResources = additionalResources;
     }

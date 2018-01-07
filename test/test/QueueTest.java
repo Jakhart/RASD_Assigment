@@ -17,6 +17,18 @@ public class QueueTest {
         Huge.getInstance().setRunningRequest(new ArrayList<>());
     }
 
+    @BeforeClass
+    public static void setUpClass() throws Exception{
+        Queue[] queues = {ShortQueue.getInstance(),Medium.getInstance(),Large.getInstance(),Huge.getInstance()};
+        for (Queue queue : queues) {
+            queue.setRunningRequest(new ArrayList<>());
+            queue.setCoreAmountAvailable(queue.getMaxCore());
+        }
+        Huge.getInstance().setWaitingRequest(new ArrayList<>());
+        Huge.getInstance().setWeekendCount(new ArrayList<>());
+        Time.setCountWeeks(1);
+    }
+
     /**
      * Test the method processRequest(Request) Oof the Queue class.
      */

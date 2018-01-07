@@ -1,0 +1,50 @@
+*******SIMULATION RESULT********
+Input information: 
+Number of users: 170
+Group name: group1
+Number of Researcher: 40	Budget per Researcher: 10000.0 $	Additional Budget: 10000.0 $
+Group name: group2
+Number of Researcher: 60	Budget per Researcher: 5000.0 $	Additional Budget: 5000.0 $
+Number of Student: 60	Budget per Student: 2000.0 $
+Number of IT USer: 10	Budget per ITUser: 3000.0 $
+
+Result: 
+
+********************
+For the Short queue: 
+Number of job process per week: 32,33
+Actual machine hour consume by user jobs: 3053 min 50,88 h
+The resulting price paid by the user: 33587,15 $
+The average wait time in the queue: 143 min
+The average turnaround time ratio: 11,15
+
+********************
+For the Medium queue: 
+Number of job process per week: 30
+Actual machine hour consume by user jobs: 18651 min 310,85 h
+The resulting price paid by the user: 139884,34 $
+The average wait time in the queue: 1018 min
+The average turnaround time ratio: 15,07
+
+********************
+For the Large queue: 
+Number of job process per week: 5
+Actual machine hour consume by user jobs: 1318 min 21,97 h
+The resulting price paid by the user: 48756,91 $
+The average wait time in the queue: 26 min
+The average turnaround time ratio: 1,87
+
+********************
+For the Huge queue: 
+Number of job process per week: 0,67
+Actual machine hour consume by user jobs: 43 min 0,72 h
+The resulting price paid by the user: 3040,62 $
+The average wait time in the queue: 11 min
+The average turnaround time ratio: 1,5
+ 
+Total: 
+ 
+Number of machine hour consume by user job: 23066 min, 384,43 h
+The resulting price paid by the user: 225269,01 $
+The simulation has been made on 3 week(s) 
+The economic balance of the center: 

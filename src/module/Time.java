@@ -1,5 +1,9 @@
 package module;
 
+/**
+ * This class enable us to follow the time of the simulation thought the sendTime
+ * attribute of the request class.
+ */
 public class Time {
     private static int countWeeks = 1;
     public final static double CUTOFF = 6240;
@@ -11,12 +15,12 @@ public class Time {
     /**
      * Verify that a week didn't pass in between two request.
      * (In order to be sure to execute the weekend queue)
-     * @param request
-     * @return
+     * @param request - the request to check
+     * @return - true if a week pass.
      */
     public static boolean checkTime(Request request){
         double timeOfWeek = request.getSendTime()/Time.countWeeks;
-        if(timeOfWeek > 10_080)
+        if(timeOfWeek > Time.FULLWEEK)
             return true;
         else
             return false;
@@ -24,11 +28,11 @@ public class Time {
 
     /**
      * Test if a request is send during the weekend or not.
-     * @param request
-     * @return
+     * @param request - the request to check
+     * @return - true if it's the weekend
      */
     public static boolean checkWeekend(Request request){
-        if(Math.round(request.getSendTime()/countWeeks) > CUTOFF){
+        if(Math.round(request.getSendTime()- (countWeeks - 1)*Time.FULLWEEK) > CUTOFF){
             return true;
         }else{
             return false;
@@ -60,5 +64,9 @@ public class Time {
 
     public static void setEndWeekend(double endWeekend) {
         Time.endWeekend = endWeekend;
+    }
+
+    public static void setCountWeeks(int countWeeks) {
+        Time.countWeeks = countWeeks;
     }
 }
